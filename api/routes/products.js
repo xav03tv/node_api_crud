@@ -27,6 +27,7 @@ router.get('/',(req, res, next)=>{
 })
 //Ajoute un nouveau produit
 router.post('/',(req, res, next)=>{
+    console.log(req.body.price);
     const product = new Product({
         _id : new mongoose.Types.ObjectId(),
         name : req.body.name,
@@ -34,14 +35,17 @@ router.post('/',(req, res, next)=>{
     })
     product.save().then(result=>{
         console.log(result)
+        res.status(200).json({
+            createdProduct : product
+        })
     })
     .catch(error=>{
         console.log(error)
+        res.status(500).json({
+            error : error
+        })
     })
-    res.status(200).json({
-        message : 'Handling POST requests to /products',
-        createdProduct : product
-    })
+    
 })
 //Récupere un produit grace à un ID
 router.get('/:productId', (req, res, next)=>{
