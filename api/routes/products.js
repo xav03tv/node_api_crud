@@ -9,12 +9,18 @@ router.get('/',(req, res, next)=>{
     .exec()
     .then(docs => {
         console.log(docs);
-        res.status(200).json(docs);
+        // if(docs.length >=0){
+            res.status(200).json(docs);
+        // }else{
+        //     res.status(404).json({
+        //         message : "Aucun contenu"
+        //     })
+        // }
     })
     .catch( err => {
         console.log(err)
         res.status(500).json({
-            "message" : err
+            "error" : err
         });
     });
 })
@@ -40,7 +46,7 @@ router.post('/',(req, res, next)=>{
 router.get('/:productId', (req, res, next)=>{
     const id = req.params.productId;
     const ObjectID = mongoose.Types.ObjectId;
-    if(ObjectID.isValid(id)){
+  
         Product.findById(id)
    .exec()
    .then(doc => {
@@ -54,24 +60,46 @@ router.get('/:productId', (req, res, next)=>{
    })
    .catch(err=>{
        console.log(err);
-       res.status(500).json({error : error});
+       res.status(500).json({error : err});
     });
-    }else{
-        console.log("L'id n'est pas valide")
-        res.status(500).json({error : "L'id n'est pas valide"});
-    }
+  
    
 })
 
+//Mise à jour des produits
 router.patch('/:productId', (req, res, next)=>{
-    res.status(200).json({
-        message: 'Le produit est mis à jour!'
+    const updateOps = {};
+    for(const ops of req.body){
+        updateOps[ops.propName] = ops.value;
+    }
+    Product.updateOne({_id : req.params.productId},{$set: updateOps})
+    .exec()
+    .then(result=>{
+        console.log(result);
+        res.status(200).json(result);
     })
+    .catch(err=>{
+        console.log(err);
+        res.status(500).json({
+            error : err
+        })
+    });
+
 })
 
 router.delete('/:productId', (req, res, next)=>{
-    res.status(200).json({
-        message: 'Le produit a été supprimé !'
+    Product.remove({
+        _id : req.params.productId
+    })
+    .exec()
+    .then(result =>{
+        res.status(200).json(result);
+    })
+    .catch(err=>{
+        console.log(err),
+        res.status(500).json({
+            error : err
+        })
     })
 })
 
