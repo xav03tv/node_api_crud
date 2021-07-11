@@ -7,11 +7,25 @@ const Product = require('../models/products');
 //Récupere tous les produits
 router.get('/',(req, res, next)=>{
     Product.find()
+    .select("name price _id")
     .exec()
     .then(docs => {
-        console.log(docs);
+        const response = {
+            count : docs.length,
+            products : docs.map(doc=>{
+                return {
+                    name : doc.name,
+                    price : doc.price,
+                    _id : doc._id,
+                    request : {
+                        "type" : "GET",
+                        "url" : "http://localhost:3000/products/" + doc._id
+                    }
+                }
+            })
+        }
         // if(docs.length >=0){
-            res.status(200).json(docs);
+            res.status(200).json(response);
         // }else{
         //     res.status(404).json({
         //         message : "Aucun contenu"
@@ -27,7 +41,6 @@ router.get('/',(req, res, next)=>{
 })
 //Ajoute un nouveau produit
 router.post('/',(req, res, next)=>{
-    console.log(req.body.price);
     const product = new Product({
         _id : new mongoose.Types.ObjectId(),
         name : req.body.name,
