@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 const Product = require('../models/products');
 
+//Récupere tous les produits
 router.get('/',(req, res, next)=>{
     Product.find()
     .exec()
@@ -18,7 +19,7 @@ router.get('/',(req, res, next)=>{
         });
     });
 })
-
+//Ajoute un nouveau produit
 router.post('/',(req, res, next)=>{
     const product = new Product({
         _id : new mongoose.Types.ObjectId(),
@@ -36,7 +37,7 @@ router.post('/',(req, res, next)=>{
         createdProduct : product
     })
 })
-
+//Récupere un produit grace à un ID
 router.get('/:productId', (req, res, next)=>{
     const id = req.params.productId;
     const ObjectID = mongoose.Types.ObjectId;
@@ -62,13 +63,13 @@ router.get('/:productId', (req, res, next)=>{
     }
    
 })
-
+//Met à jour un produit grace à un ID
 router.patch('/:productId', (req, res, next)=>{
     res.status(200).json({
         message: 'Le produit est mis à jour!'
     })
 })
-
+//Supprime un produit grace à son ID
 router.delete('/:productId', (req, res, next)=>{
     res.status(200).json({
         message: 'Le produit a été supprimé !'
