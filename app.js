@@ -7,6 +7,7 @@ require("dotenv").config();
 
 const productRoutes = require("./api/routes/products");
 const orderRoutes = require("./api/routes/orders");
+const userRoutes = require("./api/routes/user");
 
 mongoose.connect(
   "mongodb+srv://xav03:" +
@@ -36,6 +37,7 @@ app.use((req, res, next) => {
 //Routes qui manipulent la requete
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
+app.use("/user", userRoutes);
 
 app.use((req, res, next) => {
   const error = new Error("Not found");
